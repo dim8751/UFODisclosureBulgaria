@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error_msg = $t['err_amount_invalid'];
             } else {
                 try {
-                    \Stripe\Stripe::setApiKey('sk_test_51QnskfR2TFgANVZJDtqg5gK37iEOJfAvScTTeTg9XIzR7z59zhpTyW4sOtTu75oRW4WC44s2YnRq3PjgSQd4IBWj00iuRjJkTT');
+                    \Stripe\Stripe::setApiKey('STRIPE_TEST_SECRET_KEY_GOES_HERE');
 
                     if (!isset($_POST['stripeToken'])) {
                         throw new Exception($t['err_token_missing']);
@@ -262,7 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     };
 
     // Initialize Stripe
-    var stripe = Stripe('pk_test_51QnskfR2TFgANVZJDbrnOW6HWrKzUHAF16JP0r4GHFsbyCYXAvLDZ6NT2xwbANJz7F46DyLkBP8kEGDqM5GHg4i800ZapE3A0e');
+    var stripe = Stripe('STRIPE_TEST_PUBLIC_KEY_GOES_HERE');
     var elements = stripe.elements();
 
     // Create card element
