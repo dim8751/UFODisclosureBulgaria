@@ -1,0 +1,14 @@
+{
+    "name": "ufodisclosurebulgaria/website",
+    "description": "A donation page for UfoDisclosureBulgaria",
+    "authors": [
+        {
+            "name": "Ivan Ivanov",
+            "email": "ufodisclosurebulgaria.website@gmail.com"
+        }
+    ],
+    "require": {
+        "stripe/stripe-php": "^16.5",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
