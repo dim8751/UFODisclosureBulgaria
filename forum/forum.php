@@ -1405,23 +1405,18 @@ function createCommentElement(comment, parentCommentID = null, lang) {
     const isLoggedIn = <?php echo json_encode($isLoggedIn); ?>;
     const userType = '<?php echo $userType; ?>';
 
+    // Match the exact structure of PHP-rendered comments
     let commentHTML = `
         <div class="comment${isNested ? ' nested-comment' : ''}" id="comment-${comment.commentID}">
             <div class="comment-avatar">
                 <img src="${comment.userProfilePhoto || '../images/default_profile.jpg'}" alt="Profile Photo">
-    `;
-    
-    if (badgeDetails) {
-        commentHTML += `
-            <div class="donor-badge" 
-                 title="${badgeDetails.title}"
-                 style="background-color: ${badgeDetails.color}; border: 2px solid ${badgeDetails.border};">
-                <i class="fas fa-star" style="color: #000;"></i>
-            </div>
-        `;
-    }
-    
-    commentHTML += `
+                ${badgeDetails ? `
+                    <div class="donor-badge" 
+                         title="${badgeDetails.title}"
+                         style="background-color: ${badgeDetails.color}; border: 2px solid ${badgeDetails.border};">
+                        <i class="fas fa-star" style="color: #000;"></i>
+                    </div>
+                ` : ''}
             </div>
             <div class="comment-content">
                 <div class="comment-header">
@@ -1429,7 +1424,7 @@ function createCommentElement(comment, parentCommentID = null, lang) {
                         ${comment.userFirstName} ${comment.userLastName}
                         ${comment.userType === 'admin' ? '<span class="admin-badge">Admin</span>' : ''}
                     </div>
-                    <div class="comment-date">${new Date(comment.created_at).toLocaleDateString()}</div>
+                    <div class="comment-date">${comment.created_at}</div>
                 </div>
                 <div class="comment-text" id="comment-text-${comment.commentID}">${comment.commentContent.replace(/\n/g, '<br>')}</div>
                 ${comment.isEdited ? '<div class="comment-status">' + translations.edited + '</div>' : ''}
@@ -1447,9 +1442,11 @@ function createCommentElement(comment, parentCommentID = null, lang) {
                 <div class="delete-comment${userType === 'admin' ? ' admin-delete' : ''}" onclick="showDeleteCommentPopup(${comment.commentID}, ${comment.topicID})">${translations.delete}</div>
             `;
         }
-        commentHTML += `
-            <div class="reply-link" onclick="toggleReplyForm(${comment.commentID})">${translations.reply}</div>
-        `;
+        if (!isNested) { // Only add reply option to top-level comments
+            commentHTML += `
+                <div class="reply-link" onclick="toggleReplyForm(${comment.commentID})">${translations.reply}</div>
+            `;
+        }
     }
 
     commentHTML += `
@@ -1472,7 +1469,8 @@ function createCommentElement(comment, parentCommentID = null, lang) {
         `;
     }
 
-    commentHTML += `
+    if (isLoggedIn && !isNested) {
+        commentHTML += `
                 <div id="reply-form-${comment.commentID}" class="reply-form" style="display:none">
                     <div id="reply-error-${comment.commentID}" class="error" style="display:none;"></div>
                     <form onsubmit="return submitComment(this, event)">
@@ -1484,10 +1482,14 @@ function createCommentElement(comment, parentCommentID = null, lang) {
                         <button type="button" class="cancel-btn" onclick="toggleReplyForm(${comment.commentID})">${translations.cancel}</button>
                     </form>
                 </div>
+        `;
+    }
+
+    commentHTML += `
             </div>
         </div>
     `;
-    
+
     return commentHTML;
 }
 
@@ -1514,6 +1516,8 @@ function submitComment(form, event) {
     const commentSection = document.querySelector('.comment-section');
     const commentCount = commentSection.querySelector('h2');
     const currentCount = parseInt(commentCount.textContent.match(/\d+/)[0]);
+    const showCommentButton = document.getElementById('show-comment-form');
+    const commentFormContainer = document.getElementById('comment-form');
     
     fetch('../forum/ajax_handler.php', {
         method: 'POST',
@@ -1525,12 +1529,16 @@ function submitComment(form, event) {
             const commentHTML = createCommentElement(data.comment, data.parentCommentID, '<?php echo $lang; ?>');
             
             if (data.parentCommentID) {
+                // For replies, append to parent comment
                 const parentCommentContent = document.getElementById(`comment-${data.parentCommentID}`).querySelector('.comment-content');
                 parentCommentContent.insertAdjacentHTML('beforeend', commentHTML);
             } else {
-                const commentsContainer = document.querySelector('.comment-section');
-                commentsContainer.insertAdjacentHTML('beforeend', commentHTML);
+                // For main comments, append to the comment section
+                commentSection.insertAdjacentHTML('beforeend', commentHTML);
                 commentCount.textContent = `${translations.comments} (${currentCount + 1})`;
+                // Move the button and form to the bottom after adding the comment
+                commentSection.appendChild(showCommentButton);
+                commentSection.appendChild(commentFormContainer);
             }
             
             form.reset();

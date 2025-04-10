@@ -57,6 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$commentID]);
                 $comment = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                // Format the created_at date as "Mon DD, YYYY"
+                $comment['created_at'] = date('M d, Y', strtotime($comment['created_at']));
+
                 $response['success'] = true;
                 $response['comment'] = $comment;
                 $response['parentCommentID'] = $parentCommentID;

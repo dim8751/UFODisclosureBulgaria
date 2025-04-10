@@ -731,7 +731,7 @@ form {
         }
         
 .nested-comment {
-    margin-left: 40px;
+    margin-left: 20px;
     position: relative;
     border: 1px solid #744769;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
@@ -1037,8 +1037,8 @@ form {
                 width: 100%;
                 overflow: auto;
                 max-height: auto;
-                padding-bottom: 100px;
             }
+
             h1 {
                 font-size: 1.8rem;
                 margin-bottom: 20px;
@@ -1053,9 +1053,8 @@ form {
                 transform: rotate(90deg);
             }
         
-            /* Forum-specific elements (retained from original) */
             .comment-section h2 {
-                font-size: small;
+                font-size: 0.65rem;
             }
             .login-form,
             .register-form {
@@ -1078,12 +1077,23 @@ form {
             }
 
             .nested-comment {
-                width: 95%;
+                width: 94%; 
+            }
+
+            .nested-comment .comment-date {
+                font-size: 0.65rem; 
             }
 
             .comment-avatar {
+                min-width: 60px;
+                height: 60px;
                 margin-right: 10px;
                 margin-bottom: 10px;
+            }
+
+            .nested-comment .comment-avatar {
+                min-width: 40px;
+                height: 40px;
             }
 
             .comment-date {
@@ -1117,6 +1127,9 @@ form {
                 overflow-y: auto;
                 max-height: fit-content;
                 padding-bottom: 100px;
+            }
+            #mainCommentContent {
+                width: 100%;
             }
         }
         
@@ -1153,7 +1166,6 @@ form {
                 flex-direction: row;
             }
         
-            /* Forum-specific elements (retained from original) */
             .login-form,
             .register-form {
                 width: 600px;
@@ -1166,6 +1178,17 @@ form {
             }
             .form-popup {
                 width: 500px;
+            }
+            .comment-avatar {
+                min-width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .nested-comment .comment-avatar {
+                min-width: 40px;
+                height: 40px;
             }
         }
         
@@ -1201,8 +1224,6 @@ form {
             .nav-list {
                 flex-direction: row;
             }
-        
-            /* Forum-specific elements (retained from original) */
             .login-form,
             .register-form {
                 width: 700px;
@@ -1216,10 +1237,20 @@ form {
             .form-popup {
                 width: 600px;
             }
+            .comment-avatar {
+                min-width: 60px;
+                height: 60px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .nested-comment .comment-avatar {
+                min-width: 40px;
+                height: 40px;
+            }
         }
         
         @media (hover: none) {
-            /* Shared elements from dashboard */
             .nav-item.dropdown .dropdown-menu {
                 display: none;
             }
